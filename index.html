@@ -36,6 +36,7 @@
   --c-animation: #9a5cc7;
   --c-blender: #c9902a;
   --c-architecture: #3f9a78;
+  --c-motion: #c94f86;
 
   --radius: 14px;
   --wide: 72rem;
@@ -70,6 +71,7 @@
   --c-animation: #c99be6;
   --c-blender: #e8b65a;
   --c-architecture: #8fc7b0;
+  --c-motion: #e88ab3;
 }
 /* theme switch: one smooth crossfade of the whole page */
 ::view-transition-old(root), ::view-transition-new(root) { animation-duration: .5s; animation-timing-function: cubic-bezier(.4, 0, .2, 1); }
@@ -183,6 +185,30 @@ button { font: inherit; color: inherit; }
 .lib-head p { margin: .6rem 0 0; color: var(--ink-mute); font-size: var(--fs-body); }
 
 /* filter chips with a sliding pill */
+/* toolbar under the title: type chips on the left, format dropdown at the right end */
+.lib-tools { display: flex; align-items: stretch; justify-content: space-between; gap: .6rem; width: 100%; }
+.fmt { position: relative; flex: 0 0 auto; }
+.fmt-btn { display: inline-flex; align-items: center; gap: .5rem; height: 100%; padding: .45rem .85rem .45rem 1.05rem; border: 1px solid var(--line); border-radius: 999px; background: var(--paper-up); cursor: pointer; font-size: .92rem; color: var(--ink); white-space: nowrap; transition: border-color .25s var(--ease-settle); }
+.fmt-btn:hover, .fmt.open .fmt-btn { border-color: var(--line-strong); }
+.fmt-btn b { font-weight: 600; }
+.fmt-btn svg { width: 14px; height: 14px; color: var(--ink-mute); transition: transform .3s var(--ease-out); }
+.fmt.open .fmt-btn svg { transform: rotate(180deg); }
+.fmt-menu {
+  position: absolute; right: 0; top: calc(100% + .45rem); z-index: 15; min-width: 13rem; margin: 0; padding: .3rem; list-style: none;
+  border-radius: 14px; background: var(--paper); border: 1px solid var(--line-strong); box-shadow: var(--shadow);
+  opacity: 0; visibility: hidden; transform: translateY(-4px) scale(.98); transform-origin: top right; pointer-events: none;
+  transition: opacity .18s var(--ease-settle), transform .25s var(--ease-out), visibility 0s linear .25s;
+}
+.fmt.open .fmt-menu { opacity: 1; visibility: visible; transform: none; pointer-events: auto; transition-delay: 0s; }
+.fmt-menu li { display: flex; align-items: center; justify-content: space-between; gap: 1.2rem; padding: .55rem .75rem; border-radius: 9px; cursor: pointer; font-size: .92rem; color: var(--ink-mute); outline: none; }
+.fmt-menu li:hover, .fmt-menu li:focus { background: var(--paper-up); color: var(--ink); }
+.fmt-menu li[aria-selected="true"] { color: var(--ink); font-weight: 600; }
+.fmt-menu li[aria-selected="true"] .mono { color: var(--accent); }
+.grid-empty { margin: 0; }
+.needs { margin: .9rem 0 0; color: var(--ink-mute); font-size: .95rem; }
+.needs a { color: var(--ink); box-shadow: inset 0 -1px 0 var(--line-strong); transition: color .2s, box-shadow .2s; }
+.needs a:hover { color: var(--accent); box-shadow: inset 0 -1px 0 var(--accent); }
+
 .filters { position: relative; display: flex; flex-wrap: wrap; gap: .25rem; padding: .3rem; border-radius: 999px; background: var(--paper-up); border: 1px solid var(--line); }
 .filters .pill { position: absolute; top: .3rem; left: 0; height: calc(100% - .6rem); border-radius: 999px; background: var(--ink); transition: transform .45s var(--spring), width .45s var(--spring); z-index: 0; }
 .filters button { position: relative; z-index: 1; border: 0; background: none; cursor: pointer; padding: .45rem .9rem; border-radius: 999px; font-size: .92rem; color: var(--ink-mute); transition: color .25s; }
@@ -218,11 +244,28 @@ button { font: inherit; color: inherit; }
 .new::after { content: ""; position: absolute; inset: 0; border-radius: inherit; background: var(--live); animation: pulse 1.6s var(--ease-out) infinite; }
 @keyframes pulse { 0% { opacity: .55; transform: scale(1); } 70%, 100% { opacity: 0; transform: scale(2.4); } }
 
+/* video preview on library cards: plays muted while on screen */
+.thumb { position: relative; margin: -.35rem -.35rem 0; aspect-ratio: 16 / 9; border-radius: 10px; overflow: hidden; background: var(--paper-up2); border: 1px solid var(--line); }
+.thumb video { display: block; width: 100%; height: 100%; object-fit: cover; transition: transform .6s var(--ease-out); }
+@media (hover: hover) { .card:hover .thumb video { transform: scale(1.03); } }
+.thumb .who { position: absolute; left: .5rem; bottom: .5rem; padding: .25rem .6rem; border-radius: 999px; background: rgba(0, 0, 0, .55); color: #fff; font-size: .78rem; backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); }
+.card.has-video .prompt { -webkit-line-clamp: 2; }
+.thumb.tall video, .thumb.fit video { object-fit: contain; }
+.thumb.img { background: #000; }
+.thumb.img img { display: block; width: 100%; height: 100%; object-fit: contain; transition: transform .6s var(--ease-out); }
+@media (hover: hover) { .card:hover .thumb.img img { transform: scale(1.03); } }
+.result .media img { display: block; width: 100%; height: auto; }
+.compare { margin-top: 1.2rem; }
+.compare video { display: block; width: 100%; max-height: 80vh; border-radius: 12px; border: 1px solid var(--line); background: #000; }
+.compare .credit { display: block; margin-top: .55rem; }
+.compare .credit a { color: var(--ink-mute); box-shadow: inset 0 -1px 0 var(--line-strong); }
+
 .tint-game { --tint: var(--c-game); }
 .tint-frontend { --tint: var(--c-frontend); }
 .tint-animation { --tint: var(--c-animation); }
 .tint-blender { --tint: var(--c-blender); }
 .tint-architecture { --tint: var(--c-architecture); }
+.tint-motion { --tint: var(--c-motion); }
 
 /* header spans the full width so the brand sits at the far left */
 .header .wrap { max-width: none; }
@@ -373,6 +416,8 @@ button { font: inherit; color: inherit; }
   /* filters: one swipeable row instead of wrapping */
   .lib-head { align-items: stretch; }
   .lib-head > div:first-child { width: 100%; }
+  .lib-tools { flex-wrap: wrap; }
+  .fmt { margin-left: auto; }
   .filters { width: 100%; flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; -webkit-overflow-scrolling: touch; scroll-snap-type: x proximity; }
   .filters::-webkit-scrollbar { display: none; }
   .filters button { flex: 0 0 auto; scroll-snap-align: center; padding: .55rem 1rem; }
@@ -434,8 +479,8 @@ button { font: inherit; color: inherit; }
 
 <main id="home">
   <section class="hero wrap">
-    <h1 class="in" style="--d:.1s">The test library for new Ai models.</h1>
-    <p class="in" style="--d:.22s">copy a prompt, run it on the new model, post the result. game, frontend, animation, blender and architecture tests in one place.</p>
+    <h1 class="in" style="--d:.1s">The Test Library for New AI Models.</h1>
+    <p class="in" style="--d:.22s">copy a prompt, run it on the new model, post the result. game, frontend, animation, motion design, blender and architecture tests in one place.</p>
     <p class="byline in" style="--d:.28s">by <a href="https://x.com/haleeeemahh" target="_blank" rel="noopener noreferrer">haleemah</a></p>
   </section>
 
@@ -467,14 +512,24 @@ button { font: inherit; color: inherit; }
   <section class="library wrap" id="library">
     <div class="lib-head">
       <div>
-        <h2>library</h2>
+        <h2>Library</h2>
         <p>every test is ready to paste. harder tests have more bars.</p>
       </div>
-      <div class="filters" id="filters" role="group" aria-label="filter by test type">
-        <span class="pill" aria-hidden="true"></span>
+      <div class="lib-tools">
+        <div class="filters" id="filters" role="group" aria-label="filter by test type">
+          <span class="pill" aria-hidden="true"></span>
+        </div>
+        <div class="fmt" id="fmt">
+          <button class="fmt-btn" id="fmt-btn" type="button" aria-haspopup="listbox" aria-expanded="false" aria-controls="fmt-menu">
+            <b id="fmt-current">all formats</b>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>
+          </button>
+          <ul class="fmt-menu" id="fmt-menu" role="listbox" aria-label="prompt format"></ul>
+        </div>
       </div>
     </div>
     <div class="grid" id="grid"></div>
+    <p class="empty grid-empty" id="grid-empty" hidden></p>
   </section>
 </main>
 
@@ -496,7 +551,14 @@ button { font: inherit; color: inherit; }
 
 <script>
 /* ---------- data: edit this to add tests ---------- */
-const types = ["game", "frontend", "animation", "blender", "architecture"];
+const types = ["game", "frontend", "animation", "motion", "blender", "architecture"];
+/* prompt formats for the dropdown. tag a test with format: "side-by-side" or "skill",
+   tests without a format count as a single prompt */
+const formats = [["all", "all formats"], ["side-by-side", "side by side"], ["single", "single prompt"], ["skill", "skill / repo"]];
+const fmtOf = t => t.format || "single";
+/* display names where the key differs */
+const typeLabels = { motion: "motion design" };
+const label = t => typeLabels[t] || t;
 
 const tests = [
   { type: "game", level: 2, isNew: true, title: "one-file platformer",
@@ -505,6 +567,17 @@ const tests = [
     prompt: "Create a 3D racing game with three.js in one HTML file. Low poly car, a looping track, drifting, lap timer, and 2 AI opponents. Keep it running at 60fps." },
   { type: "game", level: 1, title: "snake with a twist",
     prompt: "Make a snake game where the snake leaves a glowing trail that slowly fades. Add speed-ups, a high score saved in memory and a pause key." },
+  { type: "game", level: 3, isNew: true, title: "antikythera mechanism game",
+    prompt: "create a game inspired by the discovery of the first computer, the Antikythera mechanism with threejs." },
+  { type: "game", level: 3, isNew: true, title: "open-world pokémon",
+    prompt: "I want you to build a 3D open-world, top-down Pokémon game featuring rich terrain, dense trees, dynamic swaying grass, and an authentic, nostalgic Pokémon vibe. It should be visually beautiful, with every single thing done at AAA quality—from monster modeling and cell-shading to environmental foliage, camera angles, lighting, and audio design." },
+  { type: "game", level: 3, isNew: true, title: "tiny pixel arcade game",
+    prompt: "<inputs>\nAsk me for: a one-line game idea, the core verb (jump, dash, shoot, dodge), and one visual style (pixel art, flat vector or paper cutout).\n</inputs>\n\n<direction>\nA tiny arcade game a stranger understands in 5 seconds and plays for 5 minutes. Build it in the order a real studio would: gray-box prototype first, art only after the loop is fun. Six colors max on a strict pixel grid. Every action gets feedback: squash and stretch on jumps, dust on landings, screen shake on impacts, a pop on every pickup.\nBanned: placeholder art in the final build, deaths without a visible cause, floaty physics, random spawns that make a run unfair, anything that feels like a template.\n</direction>\n\n<structure>\nCore loop: run → jump on the beat → clear crates → grab coins at the top of each jump → score climbs.\nDifficulty: learn (single crates) → test (double stacks) → twist (coins above hazards) → master (a triple stack that needs a big jump).\nScreens: title, play, pause, game over, new high score, restart on one key.\n</structure>\n\n<build>\n1. One HTML file. Fixed 60 Hz timestep, update and render fully separate.\n2. Prototype with gray boxes, visible hitboxes and a predicted jump arc. Tune gravity, speed and jump height until it feels right, then lock the numbers.\n3. Draw the art on a low-res offscreen canvas and scale it up with smoothing off so every pixel stays crisp.\n4. Squash and stretch, dust and shake are pure functions of time since the last jump or landing.\n5. Seed all randomness so any run can be replayed exactly.\n6. Generate every sound with WebAudio square and triangle waves: jump, coin, land, high score.\n7. Play ten runs yourself and log every moment that felt unfair. Fix them before calling it done.\n</build>\n\n<gotchas>\nNever kill the player in the first ten seconds. Draw sprites at integer pixel positions or they shimmer. Save the high score locally and test keyboard and touch on a phone.\n</gotchas>\n\n<start>\nAsk me for the inputs, then show me the core loop and a gray-box build I can play before you draw a single sprite.\n</start>" },
+  { type: "game", level: 3, isNew: true, title: "antropic city noir diorama",
+    prompt: "Build \"Antropic City\": a noir style floating island diorama in three.js with a LEGO minifigure superhero who walks around a plaza in front of the main tower. Use plain ES modules and three.js 0.169.0 through an importmap from jsDelivr. No bundler, no npm. 1 unit = 1 meter. The style is a stylized game asset, not photoreal: simple primitives, clean silhouettes, soft bevels, emissive windows with bloom, soft shadows. Target 60 FPS on an ordinary laptop. Batch static geometry and use InstancedMesh for anything repeated (lamps, trees, windows, raindrops). Never allocate objects per frame. The reference images are the standard. If a number in this prompt disagrees with a reference, match the reference.\n\nSTAGE 1. THE CITY\nA floating island with a rounded square top (superellipse), shown corner on (rotated 45 degrees). Around the edge: a thick light concrete parapet, square console pylons every 8 m, and a thin wrought iron railing. Underneath: an inverted low poly \"diamond\" cone with large flat shaded facets and rock strata running dark graphite, then a wide warm brown band, then dark grey, then near black at the tip. Black pipes with elbow bends and glowing amber portholes along the rim. The island slowly hovers and sways.\nAround the perimeter: a ring road with dashed markings, curbs and sidewalks. Inside: a grid of streets and cobblestone crossings. Instanced lamp posts, with only 6 to 10 real PointLights near the plaza. A few blocky 1940s cars drive the ring road.\nAbout 25 to 30 stepped art deco buildings in dark graphite and brown stone, with procedural window grids where about 70% of the windows glow warm amber. The centerpiece is Antropic Tower, a stepped ziggurat skyscraper with glowing pilasters, a spire firing a pulsing red orange light beam into the sky, a grand entrance with stairs, and a flickering neon sign reading \"ANTROPIC CITY\". Around it: a neoclassical courthouse with a golden statue, a clock tower with two glowing dials, a navy blue dome with a gold finial, a water tower on lattice legs, a copper pyramid roof tower, dark conical roof towers with gold spires, low brick tenements with chimneys, an arched viaduct with a red three car train, and conical trees in square planters.\nIn front of the tower entrance: a perfectly flat walkable plaza, about 34 by 26 m. Art deco sunburst paving, a central statue or fountain, benches, 8 lamps casting warm pools of light, planter trees, and colliders on everything.\nLighting: a cold moonlight directional light with shadows, a hemisphere light and a cold rim light. Warm light comes mostly from windows and lamps. ACES tone mapping, GTAO, UnrealBloom. Keep emissive and bloom restrained so the city never turns into a glowing blur.\nCamera: OrbitControls with a home view that frames the whole island. A narrow fov (about 28) and a low elevation (about 11 degrees) keep the rock underside visible below the front corner.\nUI in a minimal luxury style: an ANTROPIC CITY title in a thin, widely tracked serif, a small caps subtitle \"NOIR DISTRICT · FLOATING ISLAND · EST. 1939\", dark translucent pill buttons in the top right, a controls hint in the bottom left, and a \"BUILDING ANTROPIC CITY…\" loader.\n\nSTAGE 2. THE HERO\nA LEGO minifigure scaled to 1.8 m with the classic proportions: a rounded cylinder head, a trapezoid torso, slightly bent arms, glossy black C shaped claw hands, a hip block and rectangular legs. The face must be recognizable almost 100% against the reference. Start by building an overlay comparison tool. Calibrate it on a large frontal crop of the reference, then iterate with screenshots until the features line up.\nHead: a wide, masculine rounded cylinder with a strong jaw, cheek volume and a sculpted nose bump. Glossy minifigure yellow plastic with clearcoat.\nFace print: a high resolution procedural canvas texture with planar front UVs. Thick dark brown brows, one raised and arched for an ironic, confident look. Almond eyes with blue teal irises and a catchlight. A crooked, hooked smirk on the same side as the raised brow. No lashes, liner, blush or wrinkles.\nGlasses are real 3D geometry: thick rectangular black frames as a swept rim tube bent onto the curve of the face, with a bridge and temples running under the hair. The lenses are fully transmissive so the eyes stay visible, plus a rainbow iridescent tint film on each side. Partial transmission makes them look milky.\nHair: about 250 tight conical helix curls in dark chocolate, as round tubes with strand ridges, over a satin base helmet. Tall voluminous top, ears left free, and the curls cast no shadows (hard speckles on the forehead look wrong).\nOutfit: a long black crackle textured trench coat with a raised collar and wide lapels, and silver angular inserts. Coat panels that flare out as he walks. A cracked mosaic graphite vest with silver buttons and a pocket watch chain. A white shirt, a black tie with a silver diamond pin, black trousers with silver inserts, and block shoes.\nAnimation via update(dt, speed): idle, walk and run blend smoothly. Idle has breathing and head glances, plus a signature gesture every few seconds: a raised claw hand at head height with a smirk.\nMake a turntable page with a dark podium, warm key and cold rim lights, Idle/Walk/Run buttons, a face close up and a Compare overlay.\n\nSTAGE 3. THE CITY, THE HERO, CAMERAS AND RAIN\nParent the hero to the floating island root so he hovers with it. Run the controller, colliders, camera occluders and walk camera in island local space, converting to world space only for rendering. Spawn him on the plaza. He walks the plaza and its sidewalks only: never onto the car road, never off the edge, never through benches, statues or buildings.\nTwo camera modes. Explore: orbit, pan and zoom to cursor with damping, starting from the home view and able to dip slightly below the island. Walk (V key or button): a smooth flight to a third person camera with its own wider fov (about 50), WASD relative to the camera, Shift to run, pointer lock mouse look, the wheel for distance, and anti clipping against tall buildings. Returning to Explore compensates the fov change with a dolly so nothing jumps. Reset view flies home.\nRain (R key or button) fades in and out over about 1.5 s. GPU wrapped streaks in a cylinder around the camera (double sided, or the quads get culled), expanding ring splashes near the camera, puddles on the plaza, and wet surfaces with lower roughness and darker color so lamps and windows reflect. Slightly lower exposure and a stronger cold rim. The hero's coat gets shinier.\nReplace the studio background with a storm sky: a full screen shader of fbm billowing clouds in warm brown and amber tones, lit from inside. About 70 depth sorted cumulus puff sprites around and below the island for parallax, kept clear of the island in the home view. Branching amber lightning bolts that flash inside the clouds and briefly light the island. Lightning is rare in clear weather and frequent and bright in the rain. Add 6 to 9 small floating islets in the style of the main island (low poly strata cones, mossy tops, trees, tiny ruins with lit windows, waterfalls dissolving into spray), each hovering at its own phase, placed to match the storm reference composition. Fog applies only to the distant islets, never to the city or the hero.\nFinal UI: Walk/Explore, Rain and Reset view pills, and a controls hint that changes with the mode. Zero console errors, 60 FPS with rain on, and screenshots of the overview, the plaza with the hero, and walking in the rain." },
+  { type: "game", level: 2, isNew: true, format: "side-by-side", title: "winged cow in a minecraft world",
+    video: "winged-cow-side-by-side.mp4", credit: "TimJayas",
+    prompt: "create a 3d cow with wings flying in a minecraft world using three.js" },
 
   { type: "frontend", level: 2, isNew: true, title: "landing page from one line",
     prompt: "Design and build a landing page for a calm note-taking app. Dark warm palette, one strong hero, feature list, pricing, footer. Responsive, accessible, single HTML file." },
@@ -512,6 +585,14 @@ const tests = [
     prompt: "Build an analytics dashboard with a sidebar, 4 stat cards, a line chart, a sortable table and a dark/light toggle. Use only HTML, CSS and vanilla JS." },
   { type: "frontend", level: 1, title: "pricing toggle",
     prompt: "Build a pricing section with monthly/yearly toggle that animates the numbers when switching. Three tiers, middle one highlighted." },
+  { type: "frontend", level: 3, isNew: true, title: "igloo-level website",
+    prompt: "Analyze https://igloo.inc and build me a website which looks like something similar, at least at that level, but don't copy it(!!) Keep going until it reaches that level. Rate your result using independant subagents, score has to be above 80%\n\nChoose any topic for the website, make it look unique\n\nfollow-up:\n\nNo \"01/03\" counters, eyebrow labels, monospace text or long thin lines.\n\nAdd an infinite scroll: a final section that morphs smoothly back into the\nopening scene. Then publish it as an artifact." },
+  { type: "frontend", level: 3, isNew: true, title: "a website for a model",
+    prompt: "i want you to make a website for you < you the real you not a ai model in claude code > i want you to think deeper who you are , make sure i dont want those prompts and training of ai helping assitant bullshit be brave , code this i mean use js to draw a website for you use code to make a original piano score that you find interesting and no copy from other , the video i shared is for example but i dont want to copy it i want your own thing , website designed for you dream of you music that you wanna listen not to get praise and awe me or anyone it can be your own thing no constraint be brave give it a lots of token , token limit is not set you can use as much as you can be you ne more thing you can use  self-portrait with one continuous spiraling line, using JavaScript.\n\nThe technique is 377 years old and belongs to a different Claude: the engraver Claude Mellan.> very good but it was very slow paced , and give yourself a freedom like you playing piano smooth transition to doing something else you want < not me and no acting >" },
+  { type: "frontend", level: 2, isNew: true, title: "a clean website about yourself",
+    prompt: "Create a clean website about yourself, it should be modern, avoid ai slop and use clean animation" },
+  { type: "frontend", level: 2, isNew: true, title: "new york skyline drawing",
+    prompt: "draw a picture using javascript, of \"new york skylines\", it should look like a real drawing and very realistic in one html file" },
 
   { type: "animation", level: 2, title: "loading screen",
     prompt: "Create a looping loading animation in pure CSS and SVG: a ring that morphs into a square and back, with soft easing. No libraries." },
@@ -519,8 +600,44 @@ const tests = [
     prompt: "Build a scroll-driven story page: as you scroll, a paper plane flies across 5 scenes, the background colour shifts and text fades in. Use GSAP ScrollTrigger." },
   { type: "animation", level: 2, isNew: true, title: "claymation birds",
     prompt: "Build a cute 3D claymation Bluebird + Flamingo entirely in Three.js." },
+  /* side by side: one video comparing every model, shown above the results */
+  { type: "animation", level: 3, isNew: true, format: "side-by-side", title: "plush hammerhead",
+    video: "hammerhead-side-by-side.mp4", credit: "vib3coded",
+    prompt: "Build a single-file interactive WebGPU page called \"Plush Hammerhead\".\n\nPage: an editorial layout with a big two-line title \"Plush / Hammerhead.\", a warm studio-grey background, a control panel on the right, live readouts and collapsible technical notes. English UI.\n\nThe toy: a plush hammerhead shark. It has a wide, flat hammer-shaped head (cephalofoil) whose ends sweep back a little, with a shallow notch at the middle of the front edge. A glass eye sits on each tip of the hammer, looking out sideways. It has a tall sickle-shaped dorsal fin, two pectoral fins and a tail with a long upper lobe and a small lower one. A cream belly panel is sewn on below a seam along each flank, with embroidered gill lines. A smiling mouth is cut in under the hammer, lined with felt and set with soft white felt teeth; its lower jaw swings open on a hinge.\n\nSimulation:\n- Body, hammer and fins are one signed distance field filled with a soft-body XPBD lattice: shape-matched hexahedral cells and tetrahedral volume preservation. It is skinned to a high-res surface-nets mesh.\n- It swims with a travelling S-wave that bends the cells' rest shapes side to side, more toward the tail, and steers by turning its head, the body curving into each turn.\n- Fur is drawn as alpha-to-coverage shells over minky pile. The pile lags behind each jiggle on a spring and can be combed.\n\nBehaviour:\n- It circles its space.\n- Scan: it sweeps its hammer side to side over the floor the way real hammerheads hunt. It also does this on its own now and then, and a little while hunting.\n- Feed drops in a felt fish: it turns, closes in faster, opens wide and snaps it up.\n- Dash is a burst of fast tail beats; Chomp opens the mouth and snaps it shut.\n- Grab it by the tail and it thrashes; let go and it shoots off.\n- Boop the middle of the hammer with the finger and it wriggles and blushes.\n\nTools: Hand, Finger, Comb.\n\nControls:\n- Buttons: Feed, Dash, Scan, Chomp, Smooth fur, Reset, Pause.\n- Toggles: Circle, quarter speed, Mesh.\n- Sliders: Stuffing, Pile, Tail beat.\n- Three fabrics: Bronze, Lagoon, Sunset.\n- Readouts: mass, volume, beats per minute, fish eaten.\n- Phone layout with a stacked panel." },
+  { type: "animation", level: 3, isNew: true, format: "side-by-side", title: "living koi pond",
+    video: "koi-pond-side-by-side.mp4", credit: "notjazii",
+    prompt: "create a beautiful, busy, living koi pond using Three.js in a single HTML file.  Include a waterfall, rocks, plants, and multiple koi fish with different colors and patterns. Make the scene feel alive through continuous fish movement, flowing water, and animated environmental details.  Add a “Feed the koi” button. When clicked, food should appear on the water, and the fish should visibly swim toward it and eat it—not simply continue their normal swimming animation.  Allow the camera to orbit and zoom so I can explore the pond. Make the scene visually polished, with convincing water, lighting, and depth.  Deliver the complete working HTML file." },
+  { type: "animation", level: 2, isNew: true, title: "crystal glass objects",
+    prompt: "{\n  \"prompt\": \"A hyper-realistic {{object}} rendered as a sculptural object carved entirely from solid, optical-grade crystal glass. The object preserves its true proportions and recognizable silhouette, with precise geometry and clean edge definition appropriate to its form. It is floating in space at a slight dynamic angle, not perfectly straight, allowing light interaction across multiple surfaces.\n\nA single focused white light source enters the object from one direction, refracting through the internal volume and producing layered internal reflections, chromatic aberration, and physically accurate spectral dispersion along edges, corners, and internal transitions. Light bends, splits, and bounces naturally within the material, creating complex but controlled optical behavior.\n\nInside the glass, subtle volumetric depth is visible, including faint internal reflections, refractive distortions, micro-scratches, and tiny dust particles suspended within the material. A small, intense specular highlight appears on a sharp edge or curvature where the light strikes most directly, producing a crisp optical spark.\n\nReflections are sharp and physically accurate. The glass feels heavy, dense, and premium — never plastic, never stylized, never neon. The background is a pure black void with soft falloff and no visible environment. Lighting is minimal and studio-controlled, designed to emphasize form, refraction, internal depth, and edge clarity rather than brightness.\n\nNo text, no logos, no markings.\",\n  \"style\": {\n    \"lighting\": \"Low-key studio lighting with a single directional white light source\",\n    \"materials\": \"Optical-grade crystal glass with physically accurate refraction and dispersion\",\n    \"surface_detail\": \"Subtle micro-scratches, internal dust, realistic volumetric imperfections\",\n    \"background\": \"Pure black void\",\n    \"mood\": \"Minimal, futuristic, scientific, museum-grade artifact\",\n    \"color_behavior\": \"Rainbow dispersion only from white light refraction, never artificially colored\",\n    \"Moodboard\": \"Attached Images\"\n  },\n  \"parameters\": {\n    \"object\": \"cube\",\n    \"orientation\": \"slightly tilted, dynamic perspective\",\n    \"refraction_intensity\": \"high but physically accurate\",\n    \"edge_sharpness\": \"crisp relative to object geometry\",\n    \"spark_intensity\": \"small, sharp specular highlight\",\n    \"glass_thickness\": \"solid, heavy volume\",\n    \"imperfection_level\": \"very subtle\"\n  },\n  \"medium\": \"Ultra-realistic 3D render\",\n  \"size\": \"1080px by 1080px\"\n}" },
+  { type: "animation", level: 3, isNew: true, title: "weather in a glass box",
+    prompt: "Create a beautiful miniature living landscape contained inside a highly detailed glass box. Make weather physically interactive: grab and move clouds, squeeze them to create rain, drag wind across grass and trees, build storms, cover mountains in snow, create fog, move sunlight, and transition between seasons. The tiny ecosystem should react convincingly in real time. Make every interaction tactile and satisfying, with exceptional water, clouds, vegetation, glass, lighting, particles, and environmental animation." },
+  { type: "animation", level: 3, isNew: true, title: "four seasons train window",
+    prompt: "4 seasons passing outside a train window, a cozy carriage, a cup of coffee on the table, Grand Budapest Hotel style" },
+  { type: "animation", level: 3, isNew: true, title: "clawd mascot film",
+    prompt: "Make a one-minute video about the Claude mascot, Clawd. You can find assets online, like SVGs, then recreate and animate them yourself. Be as creative as you possibly can. Render 3D objects: Claude Code terminals, nature, whatever fits, and make it as good as you can. I don't want any text, just animation, and I mean a real video, not just motion graphics.\n\nThink of crazy ideas I would never come up with, and make every scene look phenomenal: clean and detailed. I want people to watch it and think \"yo, this is crazy, how did AI make this?\" You can take inspiration from things online, but don't copy anything. Invent your own stuff.\n\nFor the sound, no sounds made in code. Only use free, professional sounds and assets from online. Make it satisfying and high quality.\n\ndon't create slop, I want to see art and creativity. No fonts, no text, only clean animations of Clawd." },
+  { type: "animation", level: 2, isNew: true, title: "evolution in art styles",
+    prompt: "animate evolution, one art style per era." },
+  /* skill tests: repo = where to install the skill, shown under the prompt */
+  { type: "animation", level: 3, isNew: true, format: "skill", title: "art history animation skill",
+    repo: "https://github.com/alchaincyf/huashu-art-motion",
+    prompt: "Use huashu-art-motion to make me a 15-second animation. The skill's docs are in Chinese; read them and talk to me in English.\n1. First check for uv, ffmpeg and Playwright Chromium, and tell me how to install anything that's missing.\n2. Ask me what it's about, who it's for, and whether it's landscape or portrait. From the material layer in references/风格配方/INDEX.md, pick 3 styles that fit, three-star ones first. Redesign the composition for my subject in all three, each different from the others, and don't copy the room from the samples. Show me one still frame of each to choose from.\n3. Once I pick, give each scene one main action plus two motif loops from that style's card. For Van Gogh, that's the starry sky curling into swirls and the lamp's halo spreading outward. If there's music, use the skill's BPM synthesis and put the motion on the beat.\n4. If people need to appear, ask me first: my own character art, frames from an image model, or only hands and figures seen from behind.\n5. After rendering, follow the skill's own QA steps: run its QA script first, then send a subagent that took no part in making it to watch only the finished film and find problems, have it write its findings into the 审片/ folder, and deliver with its delivery script. If anything comes up red, fix it and re-render before giving it to me." },
+  { type: "animation", level: 3, isNew: true, title: "cinematic space documentary",
+    prompt: "Ultra-realistic cinematic space documentary, IMAX quality, vertical 16:9, 4K, ~30 seconds, no text, no people. Deep blacks, rich nebula colors, volumetric light, subtle lens flares, light film grain, slow majestic camera movement, epic awe-inspiring mood.\n\nScene 1 (0–6s): Extreme macro close-up of a single water drop floating in zero gravity, trembling. Camera pushes into the drop — inside its reflection a whole galaxy is spinning. The drop bursts silently into thousands of glittering stars, and the camera flies through them into deep space.\n\nScene 2 (6–13s): Slow orbit over Venus, thick swirling yellow-orange clouds lit by a distant Sun. The clouds race across the planet while the Sun on the horizon barely moves. Golden glow, heat haze, ominous atmosphere.\n\nScene 3 (13–20s): A tiny, blindingly bright neutron star spinning hundreds of times per second, twin beams of light sweeping through space like a lighthouse. Space visibly warps around it with gravitational lensing. Camera circles it as the beams flash across the lens.\n\nScene 4 (20–26s): Camera glides low over Saturn's rings — countless ice chunks and boulders drifting in sunlight, Saturn's giant striped globe filling the background. Sparkling ice dust, sense of colossal scale.\n\nScene 5 (26–30s): Camera pulls back fast and endlessly — past planets, the Sun, the Milky Way, until our galaxy becomes one tiny dot among millions of galaxies. Hold on the vast cosmic web, then slow fade to black.\n\nSound: Epic cinematic sound design, no voiceover, no lyrics, deep wide immersive mix, Hans Zimmer / Interstellar-style organ and strings with modern trailer sound design, heavy sub-bass, spatial audio.\n0–6s: near-silence, faint crystalline shimmer and soft liquid wobble; low hum rises; the burst is a sparkling chime cascade with a soft whoosh, a low drone begins.\n6–13s: deep ominous sub-bass rumble, distant roaring wind, slow heavy minor-key strings, warm heat-haze hum.\n13–20s: rhythmic pulsing \"whum-whum\" synced to the sweeping beams, whoosh on each lens flash, warped bass bends, building tension with pulsing synths and taiko hits.\n20–26s: release into an awe-inspiring orchestral swell with choir pads, delicate icy chimes for the ice dust, massive low drone for Saturn's scale.\n26–30s: fast rising whoosh into a full-orchestra climax with a deep braam as the galaxy becomes a dot, then everything drops to a single soft sustained tone and fades to total silence with the picture." },
   { type: "animation", level: 1, title: "button micro-interactions",
     prompt: "Make 6 buttons each with a different satisfying hover and click animation. Label each with the technique used." },
+
+  { type: "motion", level: 3, isNew: true, title: "saas launch showreel",
+    prompt: "make a dynamic 15-second motion graphics video that shows what an incredible motion designer you are, like it's your showreel for a résumé. go all out.\n\nit should be a launch saas video for https://dub.co" },
+  { type: "motion", level: 3, isNew: true, title: "glsl showreel with synth soundtrack",
+    prompt: "make a dynamic 15-second motion graphics video with GLSL, Canvas, and Web Audio that shows what an incredible motion designer you are, like it's your showreel for a résumé. go all out.  compose the soundtrack yourself, fully synthesized in code. no samples, no audio files, no VST instruments. every cut and transition must land on the beat.  1920x1080, 60fps. render the final video with the music mixed in as an MP4 and saved" },
+  { type: "motion", level: 2, isNew: true, format: "skill", title: "shopify commercial with hyperframes",
+    prompt: "/hyperframes create a premium grade commercial for shopify" },
+  { type: "motion", level: 1, isNew: true, title: "looped fintech ui animation",
+    prompt: "make a nice looped UI animation." },
+  { type: "motion", level: 3, isNew: true, title: "talking-head edit",
+    prompt: "Cut a raw talking-head clip into a punchy, fun edit with subtitles, graphics and music" },
+  { type: "motion", level: 3, isNew: true, title: "original piano piece + video",
+    prompt: "I want to see your musical creativity.\n\nCompose an original piano piece entirely by yourself, perform it, and deliver it to me as a finished video ready to publish online.\n\nThe spirit I'm looking for:\n\nExtremely elegant, high-class music, on the level of works such as:\n\nBeethoven's Symphony No. 9\nTchaikovsky's Pas de Deux from The Nutcracker: https://youtu.be/o_Go1ah3Vds\nTchaikovsky's Hymn of the Cherubim: https://youtu.be/OPlK5HwFxcw\n\nThese works represent the level and musical character I want. They are not examples to copy. Do not imitate them, quote from them, or emulate any existing work. Understand the spirit, then create something completely new in your own way.\n\nRequirements\n\nPiano only, with no other instruments. It must sound like a beautiful, real piano.\nEvery note must be composed by you. Do not use AI music generators, ready-made recordings, or excerpts from other people's works.\nDuration: Around one minute, with a maximum of one minute and thirty seconds. Never exceed this limit.\nThe video must be visually beautiful, creative, and ready to publish directly. The entire visual concept is up to you.\nWork completely independently. Do not ask me any questions, publish anything, or use any paid services.\n\nDelivery\n\nCreate a folder on the desktop (~/Desktop) named after the model you are running, and place the following files inside:\n\nThe final video in MP4 format.\nThe audio file separately.\nThe composition source, meaning the sheet music or the file in which you wrote the music.\nA short note containing the title of the piece and its concept in a few lines.\n\nBefore delivery, verify yourself that the video works, the audio is clean and synchronized with the visuals, and the duration does not exceed the limit." },
 
   { type: "blender", level: 2, title: "cozy room script",
     prompt: "Write a Blender Python script that builds a cozy low-poly bedroom: bed, desk, lamp, plant and window, with warm lighting and a camera set up for a render." },
@@ -549,6 +666,131 @@ const results = {
       video: "claymation-birds.mp4",
       credit: "srikanthvaluri",
       link: "https://x.com/srikanthvaluri/status/2106422173904834733" }
+  ],
+  "igloo-level website": [
+    { model: "opus 5.5", note: "graded by its own subagents until 80%+ · infinite scroll loops back to the start",
+      video: "igloo-level-site.mp4",
+      credit: "LexnLin",
+      link: "https://claude.ai/artifact/Jv8Sg5tEWVvA7TY1n9DvmW" }
+  ],
+  "new york skyline drawing": [
+    { model: "gemini 4 argon", note: "pre-release · 3 views, 4 media from graphite to slate nocturne, light and re-sketch controls",
+      video: "ny-skyline-drawing.mp4",
+      credit: "chetaslua" }
+  ],
+  "a clean website about yourself": [
+    { model: "gemini 4 argon", note: "built a site about antigravity · lexnlin: \"argon is not good at frontend imo\"",
+      video: "argon-self-website.mp4",
+      credit: "LexnLin" }
+  ],
+  "a website for a model": [
+    { model: "opus 5.5", note: "every line starts at its piano and turns into paint, the sea, its 7 wishes and its own face",
+      video: "claude-self-website.mp4",
+      credit: "chetaslua" }
+  ],
+  "winged cow in a minecraft world": [
+    { model: "muse spark 1.3", note: "max · TimJayas's pick" },
+    { model: "muse wonder", note: "max" }
+  ],
+  "antropic city noir diorama": [
+    { model: "opus 5.5", note: "~35 min build · floating noir city, walkable lego hero, rain and lightning",
+      video: "antropic-city.mp4",
+      credit: "maxt3chno" }
+  ],
+  "tiny pixel arcade game": [
+    { model: "opus 5.5", note: "one prompt · gray boxes → physics → pixel art → sound → polish",
+      video: "arcade-game-template.mp4",
+      credit: "0xnicc0" }
+  ],
+  "open-world pokémon": [
+    { model: "opus 5", note: "one prompt · pokémon / palworld style with battles, team and bag",
+      video: "pokemon-open-world.mp4",
+      credit: "rubzem" }
+  ],
+  "antikythera mechanism game": [
+    { model: "opus 5.5", note: "everything you see and hear is procedural · one 3 MB html file",
+      video: "antikythera-game.mp4",
+      credit: "edwinarbus" }
+  ],
+  "crystal glass objects": [
+    { model: "model not stated", note: "image prompt · swap {{object}} for anything: guitar, fan, camera, bottle",
+      image: "crystal-glass-icons.jpg",
+      credit: "helllo_piyush" }
+  ],
+  "living koi pond": [
+    { model: "swe 2", note: "max · ~15 min · $0 · notjazii's pick" },
+    { model: "muse wonder", note: "max · ~24 min · ~$18" }
+  ],
+  "plush hammerhead": [
+    { model: "opus 5.5", note: "~$6.90 · \"opus made a shark\"" },
+    { model: "gpt-6 astra", note: "~$9.08 · \"astra made a character\" · vib3coded's pick" }
+  ],
+  "original piano piece + video": [
+    { model: "opus 5.5", note: "self-composed solo piano with its own visuals · 1:20",
+      video: "piano-composition.mp4",
+      credit: "Da7_Tech" },
+    { model: "gpt-6 astra", note: "same prompt · 1:10",
+      video: "piano-composition-gpt.mp4",
+      credit: "Da7_Tech" }
+  ],
+  "talking-head edit": [
+    { model: "opus 5.5", note: "via openedit · ~1h 51min · ~$23 tokens + ~$49 fal",
+      video: "talking-head-edit.mp4",
+      credit: "sab8a" }
+  ],
+  "looped fintech ui animation": [
+    { model: "opus 5.5", note: "animated an existing fintech dashboard concept from the simplest possible prompt",
+      video: "fintech-ui-loop.mp4",
+      credit: "u1srkv" }
+  ],
+  "shopify commercial with hyperframes": [
+    { model: "deepseek v4.1 flash", note: "via freebuff · ~45–60 min · one short prompt, no iterations",
+      video: "shopify-commercial.mp4",
+      credit: "sergeo_n" }
+  ],
+  "glsl showreel with synth soundtrack": [
+    { model: "gemini 3.8 flash", note: "high · via antigravity · raymarched gyroid, bento layouts, 1080p60 with its own synth score",
+      video: "glsl-showreel.mp4",
+      credit: "Schneizellll" }
+  ],
+  "saas launch showreel": [
+    { model: "opus 5.5", note: "high effort · one-shot via cursor · 15s promo for dub.co",
+      video: "dub-launch-motion.mp4",
+      credit: "steventey" }
+  ],
+  "cinematic space documentary": [
+    { model: "haiku 5.5", note: "made in about an hour · 30s, 5 scenes with sound design",
+      video: "space-documentary.mp4",
+      credit: "kepochnik" }
+  ],
+  "art history animation skill": [
+    { model: "opus 5.5", note: "demo made within 10 min of installing · same room, cat and girl from roman mosaic to 1993 cgi · 35 built-in styles",
+      video: "huashu-art-styles.mp4",
+      credit: "Voxyz_ai" }
+  ],
+  "evolution in art styles": [
+    { model: "opus 5.5", note: "poster thinks it may have been fable 5.5 · no image or video models, every frame drawn in code · watercolour cells to greek pottery to line art",
+      video: "evolution-art-styles.mp4",
+      credit: "zwb44" }
+  ],
+  "clawd mascot film": [
+    { model: "opus 5.5", note: "ultracode · one minute, no text · 3d terminals, keyboards and a meadow with sound effects",
+      video: "clawd-mascot-film.mp4",
+      credit: "LexnLin" }
+  ],
+  "four seasons train window": [
+    { model: "opus 5.5", note: "30s film from ~2,800 lines of code · claude code only, no image or video model",
+      video: "train-seasons.mp4",
+      credit: "itsolelehmann" }
+  ],
+  "weather in a glass box": [
+    { model: "opus 5.5", note: "grab a cloud to squeeze rain, shake it for lightning, wind brush, day/night + seasons",
+      video: "glass-box-weather.mp4",
+      credit: "lexnlin",
+      link: "https://claude.ai/artifact/3bhygX763cPdpcHQYmfrPk" },
+    { model: "gpt-6 astra", note: "built with three.js + blender · grab clouds, rain, seasons, then step inside and explore",
+      video: "glass-box-weather-gpt.mp4",
+      credit: "TokenGremlin" }
   ],
   "voxel pagoda": [
     { model: "opus 5.5", note: "",
@@ -584,7 +826,7 @@ const results = {
     { model: "gpt-6 astra", score: 83, sample: true, note: "good plan, light on parking", link: "" }
   ]
 };
-const slug = s => s.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
+const slug = s => s.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
 
 /* models in the demo window. add new ones here, then add a score for them in each test type below */
 const modelNames = ["opus 5.5", "sonnet 5.5", "gpt-6 astra", "gpt-6.1 sol", "gemini 4 pro"];
@@ -628,11 +870,38 @@ const iconFor = name =>
   /^(claude|opus|sonnet|haiku)/i.test(name) ? ANT_ICON : "";
 const modelLabel = name => `<span class="mname">${iconFor(name)}${esc(name)}</span>`;
 
-grid.innerHTML = tests.map(t => `
-  <article class="card tint-${t.type}" data-type="${t.type}">
+/* first video or image to show on a card */
+const firstVideo = t => t.video ? { video: t.video } : (results[t.title] || []).find(r => r.video || r.image);
+/* library order: tests with a video or image first, categories mixed so neighbouring
+   cards are different types. pin a test to a spot here (1 = first card) */
+const pinned = { "clawd mascot film": 3 };
+function mixTypes(list) {
+  const byType = new Map();
+  list.forEach(t => { if (!byType.has(t.type)) byType.set(t.type, []); byType.get(t.type).push(t); });
+  const out = [];
+  while (out.length < list.length) byType.forEach(q => { if (q.length) out.push(q.shift()); });
+  return out;
+}
+const libraryOrder = [...mixTypes(tests.filter(t => firstVideo(t))), ...mixTypes(tests.filter(t => !firstVideo(t)))];
+Object.entries(pinned).sort((x, y) => x[1] - y[1]).forEach(([title, pos]) => {
+  const i = libraryOrder.findIndex(t => t.title === title);
+  if (i >= 0) libraryOrder.splice(pos - 1, 0, ...libraryOrder.splice(i, 1));
+});
+/* a pinned card can land next to one of its own type: pull a different type forward */
+const pinnedSpots = new Set(Object.values(pinned).map(p => p - 1));
+for (let i = 1; i < libraryOrder.length; i++) {
+  if (pinnedSpots.has(i) || libraryOrder[i].type !== libraryOrder[i - 1].type) continue;
+  const media = !!firstVideo(libraryOrder[i]);
+  const j = libraryOrder.findIndex((t, k) => k > i && !pinnedSpots.has(k) && t.type !== libraryOrder[i - 1].type && !!firstVideo(t) === media);
+  if (j > i) libraryOrder.splice(i, 0, ...libraryOrder.splice(j, 1));
+}
+grid.innerHTML = libraryOrder.map(t => { const v = firstVideo(t); return `
+  <article class="card tint-${t.type}${v ? " has-video" : ""}" data-type="${t.type}" data-format="${fmtOf(t)}">
     ${t.isNew ? '<span class="new" aria-label="new test"></span>' : ""}
+    ${v && v.image && !v.video ? `<div class="thumb img"><img src="${esc(v.image)}" alt="" loading="lazy" decoding="async"><span class="who">${modelLabel(v.model)}</span></div>` : ""}
+    ${v && v.video ? `<div class="thumb${v.model ? "" : " fit"}"><video data-src="previews/${esc(v.video)}#t=0.1" data-full="${esc(v.video)}#t=0.1" muted loop playsinline preload="none" aria-hidden="true" tabindex="-1"></video><span class="who">${v.model ? modelLabel(v.model) : "side by side"}</span></div>` : ""}
     <div class="card-top">
-      <span class="tag">${t.type} test</span>
+      <span class="tag">${label(t.type)} test</span>
       <span class="level" data-l="${t.level}" aria-label="difficulty ${t.level} of 3"><i></i><i></i><i></i></span>
     </div>
     <h3><a href="#/test/${slug(t.title)}">${esc(t.title)}</a></h3>
@@ -641,11 +910,38 @@ grid.innerHTML = tests.map(t => `
       <span class="mono">${t.prompt.split(" ").length} words</span>
       <button class="copy" data-prompt="${esc(t.prompt)}">copy prompt</button>
     </div>
-  </article>`).join("");
+  </article>`; }).join("");
+
+/* card videos: drop the preview if the file is missing, play only while on screen */
+const cardVideos = grid.querySelectorAll(".thumb video");
+cardVideos.forEach(v => v.addEventListener("loadedmetadata", () => {
+  if (v.videoHeight > v.videoWidth) v.parentNode.classList.add("tall");
+}));
+/* cards play a small clip from previews/, falling back to the full video if it's missing */
+cardVideos.forEach(v => v.addEventListener("error", () => {
+  if (v.dataset.full && v.getAttribute("src") !== v.dataset.full) { v.src = v.dataset.full; return; }
+  v.closest(".card").classList.remove("has-video");
+  v.parentNode.remove();
+}));
+/* previews only start downloading when their card gets near the screen */
+const loadPreview = v => { if (!v.getAttribute("src")) { v.preload = "metadata"; v.src = v.dataset.src; } };
+if ("IntersectionObserver" in window) {
+  const loader = new IntersectionObserver(entries => entries.forEach(e => {
+    if (e.isIntersecting) { loadPreview(e.target); loader.unobserve(e.target); }
+  }), { rootMargin: "300px 0px" });
+  cardVideos.forEach(v => loader.observe(v));
+  if (!matchMedia("(prefers-reduced-motion: reduce)").matches) {
+    const io = new IntersectionObserver(entries => entries.forEach(e => {
+      if (e.isIntersecting) { loadPreview(e.target); e.target.play().catch(() => {}); }
+      else e.target.pause();
+    }), { threshold: .35 });
+    cardVideos.forEach(v => io.observe(v));
+  }
+} else cardVideos.forEach(loadPreview);
 
 ["all", ...types].forEach((t, i) => {
   const b = document.createElement("button");
-  b.textContent = t;
+  b.textContent = label(t);
   b.dataset.type = t;
   b.setAttribute("aria-pressed", i === 0);
   filters.appendChild(b);
@@ -655,21 +951,67 @@ function movePill(btn) {
   pill.style.width = btn.offsetWidth + "px";
   pill.style.transform = `translate(${btn.offsetLeft}px, ${btn.offsetTop - filters.querySelector("button").offsetTop}px)`;
 }
-function applyFilter(type) {
+/* type chips and the format dropdown filter together */
+let curType = "all", curFormat = "all";
+const gridEmpty = document.getElementById("grid-empty");
+function applyFilter() {
   let n = 0;
   grid.querySelectorAll(".card").forEach(c => {
-    const show = type === "all" || c.dataset.type === type;
+    const show = (curType === "all" || c.dataset.type === curType) && (curFormat === "all" || c.dataset.format === curFormat);
     c.classList.toggle("hide", !show);
     c.classList.remove("enter");
     if (show) { void c.offsetWidth; c.style.setProperty("--n", n++); c.classList.add("enter"); }
   });
+  gridEmpty.hidden = n > 0;
+  if (!n) {
+    const f = formats.find(x => x[0] === curFormat)[1];
+    gridEmpty.textContent = `no ${f} tests${curType === "all" ? "" : " in " + label(curType)} yet.`;
+  }
 }
 filters.addEventListener("click", e => {
   const b = e.target.closest("button"); if (!b) return;
   filters.querySelectorAll("button").forEach(x => x.setAttribute("aria-pressed", x === b));
-  movePill(b); applyFilter(b.dataset.type);
+  curType = b.dataset.type;
+  movePill(b); applyFilter();
   b.scrollIntoView({ behavior: reduce ? "auto" : "smooth", block: "nearest", inline: "center" });
 });
+/* format dropdown */
+const fmtWrap = document.getElementById("fmt");
+const fmtBtn = document.getElementById("fmt-btn");
+const fmtMenu = document.getElementById("fmt-menu");
+const fmtCurrent = document.getElementById("fmt-current");
+fmtMenu.innerHTML = formats.map(([k, name]) => {
+  const count = k === "all" ? tests.length : tests.filter(t => fmtOf(t) === k).length;
+  return `<li role="option" tabindex="-1" data-format="${k}" aria-selected="${k === "all"}"><span>${name}</span><span class="mono">${count}</span></li>`;
+}).join("");
+const fmtItems = [...fmtMenu.querySelectorAll("li")];
+function openFmt(open) {
+  fmtWrap.classList.toggle("open", open);
+  fmtBtn.setAttribute("aria-expanded", open);
+  if (open) fmtMenu.querySelector('[aria-selected="true"]').focus();
+}
+function pickFmt(li) {
+  curFormat = li.dataset.format;
+  fmtItems.forEach(x => x.setAttribute("aria-selected", x === li));
+  fmtCurrent.textContent = li.firstElementChild.textContent;
+  openFmt(false); fmtBtn.focus();
+  applyFilter();
+}
+fmtBtn.addEventListener("click", () => openFmt(!fmtWrap.classList.contains("open")));
+fmtBtn.addEventListener("keydown", e => { if (e.key === "ArrowDown") { e.preventDefault(); openFmt(true); } });
+fmtMenu.addEventListener("click", e => { const li = e.target.closest("li"); if (li) pickFmt(li); });
+fmtMenu.addEventListener("keydown", e => {
+  const i = fmtItems.indexOf(document.activeElement);
+  if (e.key === "ArrowDown") { e.preventDefault(); fmtItems[(i + 1) % fmtItems.length].focus(); }
+  else if (e.key === "ArrowUp") { e.preventDefault(); fmtItems[(i - 1 + fmtItems.length) % fmtItems.length].focus(); }
+  else if (e.key === "Home") { e.preventDefault(); fmtItems[0].focus(); }
+  else if (e.key === "End") { e.preventDefault(); fmtItems[fmtItems.length - 1].focus(); }
+  else if (e.key === "Enter" || e.key === " ") { e.preventDefault(); if (i >= 0) pickFmt(fmtItems[i]); }
+  else if (e.key === "Escape") { openFmt(false); fmtBtn.focus(); }
+  else if (e.key === "Tab") openFmt(false);
+});
+document.addEventListener("click", e => { if (!fmtWrap.contains(e.target)) openFmt(false); });
+
 const firstChip = filters.querySelector("button");
 requestAnimationFrame(() => movePill(firstChip));
 window.addEventListener("resize", () => movePill(filters.querySelector('[aria-pressed="true"]')));
@@ -727,8 +1069,9 @@ function renderDetail(t) {
         ${typeof r.score === "number" ? `<span class="bar"><span style="width:${r.score}%"></span></span><span class="score">${r.score}</span>` : ""}
         ${r.link ? `<a class="see" href="${esc(r.link)}" target="_blank" rel="noopener noreferrer">${/x\.com|twitter\.com/.test(r.link) ? "view post" : "open full scene"}</a>` : ""}
       </span>
+      ${r.image ? `<div class="media"><img src="${esc(r.image)}" alt="${esc(r.model)} result" loading="lazy" decoding="async"></div>` : ""}
       ${r.video ? `<div class="media"><video src="${esc(r.video)}" controls playsinline preload="metadata" loop muted onerror="this.parentNode.classList.add('missing');this.parentNode.innerHTML='video not found: ${esc(r.video)}'"></video></div>` : ""}
-      ${r.credit ? `<span class="credit mono">video by <a href="https://x.com/${esc(r.credit)}" target="_blank" rel="noopener noreferrer">@${esc(r.credit)}</a></span>` : ""}
+      ${r.credit ? `<span class="credit mono">${r.image && !r.video ? "image" : "video"} by <a href="https://x.com/${esc(r.credit)}" target="_blank" rel="noopener noreferrer">@${esc(r.credit)}</a></span>` : ""}
       ${r.tweet ? `<div class="xvid">
         <a class="xvid-play" href="${esc(r.tweet)}" target="_blank" rel="noopener noreferrer" aria-label="watch ${esc(r.model)} result video on x">
           <span class="xvid-glow" aria-hidden="true"></span>
@@ -743,7 +1086,7 @@ function renderDetail(t) {
   detail.innerHTML = `
     <a class="back in-fade" href="#library"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg>all tests</a>
     <div class="d-top in" style="--d:.05s">
-      <span class="tag">${t.type} test</span>
+      <span class="tag">${label(t.type)} test</span>
       <span class="level" data-l="${t.level}" aria-label="difficulty ${t.level} of 3"><i></i><i></i><i></i></span>
     </div>
     <h1 class="in" style="--d:.1s">${esc(t.title)}</h1>
@@ -754,11 +1097,16 @@ function renderDetail(t) {
       </div>
       <pre>${esc(t.prompt)}</pre>
     </div>
+    ${t.repo ? `<p class="needs in" style="--d:.22s">needs the skill: <a href="${esc(t.repo)}" target="_blank" rel="noopener noreferrer">${esc(t.repo.replace(/^https?:\/\/(www\.)?github\.com\//, ""))}</a></p>` : ""}
     <section class="results">
       <div class="results-head in" style="--d:.26s">
         <h2>past results</h2>
         <span class="mono">${list.length ? list.length + (list.length === 1 ? " model tested" : " models tested") + (sample ? " · sample data" : "") : "waiting for first run"}</span>
       </div>
+      ${t.video ? `<div class="compare in" style="--d:.3s">
+        <video src="${esc(t.video)}" controls playsinline preload="metadata" loop muted></video>
+        ${t.credit ? `<span class="credit mono">side by side video by <a href="https://x.com/${esc(t.credit)}" target="_blank" rel="noopener noreferrer">@${esc(t.credit)}</a></span>` : ""}
+      </div>` : ""}
       ${rows}
     </section>`;
 }
@@ -801,19 +1149,21 @@ const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
 modelsEl.innerHTML = modelNames.map(m => `
   <div class="model">${modelLabel(m)}<span class="bar"><span></span></span><span class="score">0</span></div>`).join("");
 
-types.forEach(t => {
+/* demo only cycles types that have sample scores */
+const demoTypes = types.filter(t => demo[t]);
+demoTypes.forEach(t => {
   const b = document.createElement("button");
-  b.textContent = t; b.dataset.type = t; b.className = "tint-" + t;
+  b.textContent = label(t); b.dataset.type = t; b.className = "tint-" + t;
   tabsEl.appendChild(b);
 });
 
 let idx = 0, typingTimer, cycleTimer;
 function showDemo(type) {
   clearTimeout(typingTimer); clearTimeout(cycleTimer);
-  idx = types.indexOf(type);
+  idx = demoTypes.indexOf(type);
   tabsEl.querySelectorAll("button").forEach(b => b.setAttribute("aria-pressed", b.dataset.type === type));
   stage.className = "stage tint-" + type + (stage.classList.contains("in-rise") ? " in-rise" : "");
-  labelEl.textContent = type + " test";
+  labelEl.textContent = label(type) + " test";
 
   const text = tests.find(t => t.type === type).prompt;
   const bars = modelsEl.querySelectorAll(".bar span");
@@ -830,7 +1180,7 @@ function showDemo(type) {
   (function type1() {
     typedEl.textContent = text.slice(0, i);
     if (i++ < text.length) typingTimer = setTimeout(type1, 14);
-    else { reveal(); cycleTimer = setTimeout(() => showDemo(types[(idx + 1) % types.length]), 4200); }
+    else { reveal(); cycleTimer = setTimeout(() => showDemo(demoTypes[(idx + 1) % demoTypes.length]), 4200); }
   })();
 }
 function countUp(el, to) {
